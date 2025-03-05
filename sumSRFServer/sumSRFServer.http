@@ -1,6 +1,0 @@
-@sumSRFServer_HostAddress = http://localhost:5001
-
-GET {{sumSRFServer_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
