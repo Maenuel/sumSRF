@@ -5,6 +5,7 @@ document.addEventListener("mouseover", function(event) {
         const nearestLink = event.target.closest(".collection-ng__teaser-item").querySelector("a[href]");
         if (nearestLink) {
             hidePopup();
+            stopSpeech();
             showPopup(nearestLink.href);
         }
     }
@@ -14,6 +15,7 @@ document.addEventListener("mouseout", function(event) {
     if (event.target.classList.contains("sumSRF")) {
         console.log("Mouse out");
         hidePopup(3000);
+        stopSpeech(3000);
     }
 });
 
@@ -33,7 +35,7 @@ document.addEventListener("mousemove", debounce(function(event) {
         popup.style.left = event.pageX + "px";
         popup.style.top = event.pageY + "px";
     }
-}, 10));
+}, 5));
 
 // Get every teaser
 const teasers = document.getElementsByClassName("collection-ng__teaser-item");
@@ -80,6 +82,11 @@ function hidePopup(delay = 0) {
             popup.remove();
         }, delay);
     }
+}
+function stopSpeech(delay = 0) {
+    setTimeout(() => {
+        window.speechSynthesis.cancel();
+    }, delay);
 }
 
 function readArticle(articleLink){
@@ -128,6 +135,11 @@ function fetchOllama(text, popup) {
     .then(data => {
         console.log('Success:', data);
         popup.textContent = data.message;
+
+        const utterance = new SpeechSynthesisUtterance(data.message);
+        utterance.lang = 'de-DE'; // Set the language to German
+        window.speechSynthesis.speak(utterance);
+
     })
     .catch((error) => {
         console.error('Error:', error);
